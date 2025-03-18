@@ -14,6 +14,17 @@
 
 
 fun main() {
-    println("Hello World!")
+    //initiate vars and vals -- plan
+
+    // loop through turns till gold coin is removed -- plan
+
+    // do something for winner -- plan
+
 }
 
+/**
+ * functions plans
+ * - one for changing main list
+ * - one that updates and visualises the game
+ * - more coming
+ */
