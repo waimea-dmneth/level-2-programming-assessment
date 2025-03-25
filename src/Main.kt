@@ -60,18 +60,53 @@ fun setSlot(index: Int, setTo: Any): Boolean {
 fun getAction(player: Int) {
     println()
     println("What Coin Do You Wish To Move? (1-6 in the [])")
-    displayGame(SHOWCOINS)
+
+    val coinSpots = mutableListOf<Int>()
+    var count = 1
+    for (i in 0..<BOARD_LENGTH) {
+        when (game[i]) {
+            EMPTY -> print("|"+" $EMPTY ".grey())
+            SILVER -> {
+                print("| $SILVER [$count] ")
+                coinSpots.add(count-1,i)
+                count++
+
+            }
+            GOLD -> {
+                print("|"+" $GOLD [$count] ".yellow())
+                coinSpots.add(count-1,i)
+                count++
+            }
+        }
+
+    }
+
+    println("|")
     print("Coin?: ")
     var coinToMove = readln().toInt()
-    for (i in 0..BOARD_LENGTH-1) {
-        if (i != EMPTY) coinToMove--
-        if (coinToMove == 0) continue
-        coinToMove = i
-        break
-    }
+    var lowest: Int = 0
+    if (coinToMove-2 > -1) lowest = coinSpots[coinToMove-2]
+    coinToMove = coinSpots[coinToMove-1]
+
     println("Pick a Spot to move to")
-    for (i in 0..coinToMove) {}
-        print()
+    count = 1
+    coinSpots.clear()
+    for (i in lowest..coinToMove) {
+        if (i == lowest && game[i] != EMPTY) continue
+        if (game[i] != EMPTY) {
+            println("| ${game[i]}")
+            break
+        }
+        print("| $EMPTY[${count}]")
+        coinSpots.add(count-1,i)
+        count++
+    }
+
+    print("Move To?: ")
+    val moveTo = readln().toInt()
+    setSlot(coinSpots[moveTo-1], game[coinToMove] )
+    game[coinToMove] = EMPTY
+    displayGame(0)
     // get the action and show possible moves with chosen piece
     // return action with player num
 }
