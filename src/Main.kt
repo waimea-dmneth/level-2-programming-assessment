@@ -1,3 +1,4 @@
+import sun.invoke.empty.Empty
 import kotlin.random.Random
 
 /**
@@ -29,15 +30,12 @@ fun main() {
     setUp()
     displayGame(0)
     while (coinStash > 0) { // loop through turns till gold coin is removed -- plan
+        setUpGame()
+        displayGame(0)
         while (true) {
-            setUpGame()
-            displayGame(0)
             doTurn(1) // change player param eventually
-            break // dont keep
-            //coinPot = 5
-
+            coinPot = 5
         }
-        break // dont keep
     }
 
 
@@ -58,63 +56,73 @@ fun setSlot(index: Int, setTo: Any): Boolean {
 }
 
 fun getAction(player: Int) {
-    println()
-    println("What Coin Do You Wish To Move? (1-6 in the [])")
+    var actionChose: Boolean = false
+    while (!actionChose) { println()
+        println("What Coin Do You Wish To Move? (1-6 in the [])")
 
-    val coinSpots = mutableListOf<Int>()
-    var count = 1
-    for (i in 0..<BOARD_LENGTH) {
-        when (game[i]) {
-            EMPTY -> print("|"+" $EMPTY ".grey())
-            SILVER -> {
-                print("| $SILVER [$count] ")
-                coinSpots.add(count-1,i)
-                count++
+        val coinSpots = mutableListOf<Int>()
+        var count = 1
+        var string = ""
+        for (i in 0..<BOARD_LENGTH) {
+            when (game[i]) {
+                EMPTY -> {
+                    string = "| $EMPTY ".grey()
+                }
+                else -> {
+                    string = "| ${game[i]} "
+                    if (game[i] == GOLD) string = string.yellow()
+                    if (coinSpots.isEmpty() || game[i-1] == EMPTY) {
+                        string += "[$count]".green()
+                    }
+                    coinSpots.add(count-1,i)
+                    count++
+                }
+            }
+            print(string)
 
-            }
-            GOLD -> {
-                print("|"+" $GOLD [$count] ".yellow())
-                coinSpots.add(count-1,i)
-                count++
-            }
+        }
+        println("|")
+
+        print("Coin?: ")
+        var coinToMove = readln().toInt()
+        var lowest: Int = 0
+        if (coinToMove-2 > -1) lowest = coinSpots[coinToMove-2]
+        coinToMove = coinSpots[coinToMove-1]
+        if (coinToMove == 0) {
+            print("\nWould you like to Take The Coin Out? (Yes or no)")
+            val takeOut = readln().first().uppercase()
+            if (takeOut != "Y") continue
+            game[0] = EMPTY
+            println("Coin Was Removed")
+            return
         }
 
-    }
-
-    println("|")
-    print("Coin?: ")
-    var coinToMove = readln().toInt()
-    var lowest: Int = 0
-    if (coinToMove-2 > -1) lowest = coinSpots[coinToMove-2]
-    coinToMove = coinSpots[coinToMove-1]
-
-    println("Pick a Spot to move to")
-    count = 1
-    coinSpots.clear()
-    for (i in lowest..coinToMove) {
-        if (i == lowest && game[i] != EMPTY) continue
-        if (game[i] != EMPTY) {
-            println("| ${game[i]}")
-            break
+        println("Pick a Spot to Move to")
+        count = 1
+        coinSpots.clear()
+        for (i in lowest..coinToMove) {
+            if (i == lowest && game[i] != EMPTY) continue
+            if (game[i] != EMPTY) {
+                print("| ${game[i]}")
+                break
+            }
+            print("| $EMPTY[${count}]")
+            coinSpots.add(count-1,i)
+            count++
         }
-        print("| $EMPTY[${count}]")
-        coinSpots.add(count-1,i)
-        count++
-    }
+        println(" |")
 
-    print("Move To?: ")
-    val moveTo = readln().toInt()
-    setSlot(coinSpots[moveTo-1], game[coinToMove] )
-    game[coinToMove] = EMPTY
-    displayGame(0)
-    // get the action and show possible moves with chosen piece
-    // return action with player num
+        print("Move To?: ")
+        val moveTo = readln().toInt()
+        actionChose = true
+        setSlot(coinSpots[moveTo-1], game[coinToMove] )
+        game[coinToMove] = EMPTY
+    }
 }
 
 fun doTurn(player: Int) {
     getAction(player)
-    // get action
-    // play action
+    displayGame(0)
 }
 
 fun setUpGame(): Boolean {
