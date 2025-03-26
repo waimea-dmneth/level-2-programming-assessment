@@ -61,9 +61,11 @@ fun getAction(player: Int) {
         println("What Coin Do You Wish To Move? (1-6 in the [])")
 
         val coinSpots = mutableListOf<Int>()
+        val pickableCoins = mutableListOf<Int>()
         var count = 1
+        var displayCount = count
         var string = ""
-        for (i in 0..<BOARD_LENGTH) {
+        for (i in 0..<BOARD_LENGTH) { // -------------------------------POSSIBLE SPOTS TO MOVE
             when (game[i]) {
                 EMPTY -> {
                     string = "| $EMPTY ".grey()
@@ -72,7 +74,9 @@ fun getAction(player: Int) {
                     string = "| ${game[i]} "
                     if (game[i] == GOLD) string = string.yellow()
                     if (coinSpots.isEmpty() || game[i-1] == EMPTY) {
-                        string += "[$count]".green()
+                        string += "[$displayCount]".green()
+                        pickableCoins.add(displayCount-1,i)
+                        displayCount++
                     }
                     coinSpots.add(count-1,i)
                     count++
@@ -84,23 +88,35 @@ fun getAction(player: Int) {
         println("|")
 
         print("Coin?: ")
-        var coinToMove = readln().toInt()
+        var coinToMove = readln().toInt()  // ------------------------------CHOICE SELECTION THINGY
         var lowest: Int = 0
-        if (coinToMove-2 > -1) lowest = coinSpots[coinToMove-2]
-        coinToMove = coinSpots[coinToMove-1]
-        if (coinToMove == 0) {
+        for (i in 0..coinSpots.size) {
+            for (ind in 0.. pickableCoins.size) {
+                if (pickableCoins[ind] == coinSpots[i]) {
+                    if (coinToMove-1 == pickableCoins[i]) {
+                        lowest = coinSpots[i-1]
+                    }
+
+                }
+            }
+        }
+
+        coinToMove = pickableCoins[coinToMove-1]
+
+
+        if (coinToMove == 0) { /// --------------------- coin takeout
             print("\nWould you like to Take The Coin Out? (Yes or no)")
             val takeOut = readln().first().uppercase()
             if (takeOut != "Y") continue
             game[0] = EMPTY
             println("Coin Was Removed")
             return
-        }
+        } // -----------------------------------------------------------------
 
         println("Pick a Spot to Move to")
         count = 1
         coinSpots.clear()
-        for (i in lowest..coinToMove) {
+        for (i in lowest..coinToMove) { /// ------------------------- MOVE TO SPOTS
             if (i == lowest && game[i] != EMPTY) continue
             if (game[i] != EMPTY) {
                 print("| ${game[i]}")
