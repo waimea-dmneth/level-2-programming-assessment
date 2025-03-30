@@ -55,7 +55,7 @@ fun setSlot(index: Int, setTo: Any): Boolean {
     return true
 }
 
-fun getAction(player: Int) {
+fun getAction(player: Int): List<Any> {
     var actionChose: Boolean = false
     while (!actionChose) { println()
         println("What Coin Do You Wish To Move? (1-6 in the [])")
@@ -90,41 +90,43 @@ fun getAction(player: Int) {
         print("Coin?: ")
         var coinToMove = readln().toInt()  // ------------------------------CHOICE SELECTION THINGY
         var lowest: Int = 0
-        for (i in 0..coinSpots.size) {
-            for (ind in 0.. pickableCoins.size) {
-                if (pickableCoins[ind] == coinSpots[i]) {
-                    if (coinToMove-1 == pickableCoins[i]) {
-                        lowest = coinSpots[i-1]
-                    }
-
-                }
-            }
+        coinToMove = pickableCoins[coinToMove-1]
+        for ( i in coinToMove-1 downTo 0 ) {
+            if (game[i] == EMPTY) continue
+            lowest = i
+            break
         }
 
-        coinToMove = pickableCoins[coinToMove-1]
-
-
         if (coinToMove == 0) { /// --------------------- coin takeout
-            print("\nWould you like to Take The Coin Out? (Yes or no)")
+            if (game[0] == GOLD) {
+                print("\nWould you like to Take The ${"Gold".yellow()} Coin Out AND WIN!!? (Yes or no)")
+            } else {
+                print("\nWould you like to Take The Coin Out? (Yes or no)")
+            }
             val takeOut = readln().first().uppercase()
             if (takeOut != "Y") continue
             game[0] = EMPTY
             println("Coin Was Removed")
-            return
+            return listOf(true, player)
         } // -----------------------------------------------------------------
 
         println("Pick a Spot to Move to")
         count = 1
         coinSpots.clear()
-        for (i in lowest..coinToMove) { /// ------------------------- MOVE TO SPOTS
-            if (i == lowest && game[i] != EMPTY) continue
-            if (game[i] != EMPTY) {
-                print("| ${game[i]}")
-                break
+        for (i in 0..BOARD_LENGTH-1) { /// ------------------------- MOVE TO SPOTS
+            string = when (game[i]) {
+                GOLD -> ("| ${game[i]} ").yellow()
+                EMPTY -> ("| ${game[i]} ").grey()
+                else -> ("| ${game[i]} ")
             }
-            print("| $EMPTY[${count}]")
-            coinSpots.add(count-1,i)
-            count++
+
+            if (i in lowest..<coinToMove && game[i] == EMPTY) {
+                string += "[${count}]".green()
+                coinSpots.add(count-1,i)
+                count++
+            }
+            print(string)
+
         }
         println(" |")
 
