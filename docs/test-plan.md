@@ -10,31 +10,31 @@ Terminology:
 
 ---
 
-## Example Test Name
+## Game Setup
 
-Example test description. Example test description. Example test description. Example test description. Example test description. Example test description.
+proof that the game sets itself up properly
 
 ### Test Data To Use
 
-Details of test data and reasons for selection. Details of test data and reasons for selection. Details of test data and reasons for selection.
+the output after the setup finishes and code that proves where its doing what
 
 ### Expected Test Result
 
-Statement detailing what should happen. Statement detailing what should happen. Statement detailing what should happen. Statement detailing what should happen. 
+the game should fill the board with the amount of coins decided in random places, no coin should start in first slot
 
 ---
 
-## Example Test Name
+## Player Moves
 
-Example test description. Example test description. Example test description. Example test description. Example test description. Example test description.
+the player has proper control over what they want to do and that they cant do stuff theyre not meant to
 
 ### Test Data To Use
 
-Details of test data and reasons for selection. Details of test data and reasons for selection. Details of test data and reasons for selection.
+output and proof of corrections where problems happened and code that stop stuff like coins going past each other and how the player selects what they want to do
 
 ### Expected Test Result
 
-Statement detailing what should happen. Statement detailing what should happen. Statement detailing what should happen. Statement detailing what should happen. 
+smooth control for the player with no errors or unfair advantages
 
 ---
 

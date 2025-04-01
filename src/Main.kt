@@ -10,7 +10,7 @@ import kotlin.random.Random
  * GitHub Repo:    https://github.com/waimea-dmneth/level-2-programming-assessment
  * ---------------------------------------------------------------------
  * Notes:
- * i use capitals for tables and functions its not a mistake
+ *
  * =====================================================================
  */
 const val BOARD_LENGTH = 15
@@ -32,9 +32,14 @@ fun main() {
     while (coinStash > 0) { // loop through turns till gold coin is removed -- plan
         setUpGame()
         displayGame(0)
+        println("How many of your coins do you want to place on the next board (Max 9)")
+        print("Amount: ")
+        coinPot = readln().toInt()
+        var player: Int = Random.nextInt(1, 2)
         while (true) {
-            doTurn(1) // change player param eventually
-            coinPot = 5
+            doTurn(player) // change player param eventually
+            if (player == 2) player = 1
+            if (player == 1) player = 2
         }
     }
 
@@ -83,7 +88,6 @@ fun getAction(player: Int): List<Any> {
                 }
             }
             print(string)
-
         }
         println("|")
 
@@ -99,7 +103,7 @@ fun getAction(player: Int): List<Any> {
 
         if (coinToMove == 0) { /// --------------------- coin takeout
             if (game[0] == GOLD) {
-                print("\nWould you like to Take The ${"Gold".yellow()} Coin Out AND WIN!!? (Yes or no)")
+                print("\nWould you like to Take The ${"Gold".yellow()} Coin Out ${"AND WIN!!?".red()} (Yes or no)")
             } else {
                 print("\nWould you like to Take The Coin Out? (Yes or no)")
             }
@@ -113,11 +117,13 @@ fun getAction(player: Int): List<Any> {
         println("Pick a Spot to Move to")
         count = 1
         coinSpots.clear()
+
         for (i in 0..BOARD_LENGTH-1) { /// ------------------------- MOVE TO SPOTS
-            string = when (game[i]) {
-                GOLD -> ("| ${game[i]} ").yellow()
-                EMPTY -> ("| ${game[i]} ").grey()
-                else -> ("| ${game[i]} ")
+            string = "| ".black()
+            string += when (game[i]) {
+                GOLD -> game[i].toString().yellow() + " "
+                EMPTY -> game[i].toString().grey() + " "
+                else -> game[i].toString() + " "
             }
 
             if (i in lowest..<coinToMove && game[i] == EMPTY) {
@@ -136,6 +142,7 @@ fun getAction(player: Int): List<Any> {
         setSlot(coinSpots[moveTo-1], game[coinToMove] )
         game[coinToMove] = EMPTY
     }
+    return listOf(false, player)
 }
 
 fun doTurn(player: Int) {
