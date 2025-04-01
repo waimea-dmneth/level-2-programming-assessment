@@ -27,23 +27,41 @@ var coinPot: Int = 5
 val game = mutableListOf<Any>()
 //initiate vars and vals -- plan
 fun main() {
-    setUp()
-    displayGame(0)
+    println("Whats yer name")
+    print("Name: ")
+    val Name = "skib"//readln()
+
     while (coinStash > 0) { // loop through turns till gold coin is removed -- plan
-        setUpGame()
+        setUp()
         displayGame(0)
-        println("How many of your coins do you want to place on the next board (Max 9)")
+        println()
+        println("!".red() + "How many of your coins do you want to place on the next board " + "(Max 9)".red())
         print("Amount: ")
         coinPot = readln().toInt()
+        val bet = coinPot
+        coinStash -= coinPot
+        setUpGame()
+        displayGame(0)
+
         var player: Int = Random.nextInt(1, 2)
         while (true) {
-            doTurn(player) // change player param eventually
-            if (player == 2) player = 1
-            if (player == 1) player = 2
+            val end = doTurn(player) // change player param eventually
+            if (end) break
+            when (player) {
+                1 -> player = 2
+                2 -> player = 1
+            }
         }
+        when (player) {
+            1 -> {
+                println("You Won!".green() + Name)
+                coinStash = (bet * 1.5).toInt()
+                println(coinStash)
+            }
+            2 -> println("You Lost! ".red() + Name)
+        }
+        game.clear()
     }
-
-
     // do something for winner -- plan
 }
 
@@ -63,13 +81,14 @@ fun setSlot(index: Int, setTo: Any): Boolean {
 fun getAction(player: Int): List<Any> {
     var actionChose: Boolean = false
     while (!actionChose) { println()
-        println("What Coin Do You Wish To Move? (1-6 in the [])")
 
+        if (player == 1) println("What Coin Do You Wish To Move? (1-6 in the [])")
+        if (player == 2) println("Choosing Coin")
         val coinSpots = mutableListOf<Int>()
         val pickableCoins = mutableListOf<Int>()
         var count = 1
         var displayCount = count
-        var string = ""
+        var string: String
         for (i in 0..<BOARD_LENGTH) { // -------------------------------POSSIBLE SPOTS TO MOVE
             when (game[i]) {
                 EMPTY -> {
@@ -90,9 +109,19 @@ fun getAction(player: Int): List<Any> {
             print(string)
         }
         println("|")
-
-        print("Coin?: ")
-        var coinToMove = readln().toInt()  // ------------------------------CHOICE SELECTION THINGY
+        var coinToMove = 1
+        when (player) {
+            1 -> {
+                    print("Coin?: ")
+                    coinToMove = readln().toInt()
+                }
+            2 -> {
+                if (pickableCoins.size != 1) coinToMove = Random.nextInt(1,pickableCoins.size)
+                if (game[0] == GOLD) coinToMove = 1
+                println("Picked Coin $coinToMove")
+            }
+        }
+        // ------------------------------CHOICE SELECTION THINGY
         var lowest: Int = 0
         coinToMove = pickableCoins[coinToMove-1]
         for ( i in coinToMove-1 downTo 0 ) {
@@ -102,23 +131,37 @@ fun getAction(player: Int): List<Any> {
         }
 
         if (coinToMove == 0) { /// --------------------- coin takeout
-            if (game[0] == GOLD) {
-                print("\nWould you like to Take The ${"Gold".yellow()} Coin Out ${"AND WIN!!?".red()} (Yes or no)")
-            } else {
-                print("\nWould you like to Take The Coin Out? (Yes or no)")
+            if (player == 1) {
+                if (game[0] == GOLD) {
+                    print("\nWould you like to Take The ${"Gold".yellow()} Coin Out ${"AND WIN!!?".green()} (Yes or no)")
+                } else {
+                    print("\nWould you like to Take The Coin Out? (Yes or no)")
+                }
             }
-            val takeOut = readln().first().uppercase()
+            var takeOut = "Y"
+            if (player == 1) takeOut = readln().first().uppercase()
+
             if (takeOut != "Y") continue
-            game[0] = EMPTY
-            println("Coin Was Removed")
-            return listOf(true, player)
+            if (game[0] == GOLD) {
+                game[0] = EMPTY
+                println("Coin Was Removed")
+                return listOf(true, player)
+            } else {
+                game[0] = EMPTY
+                println("Coin Was Removed")
+                return listOf(false, player)
+            }
         } // -----------------------------------------------------------------
 
-        println("Pick a Spot to Move to")
+        when (player) {
+            1 -> println("Pick a Spot to Move to")
+            2 -> println("Choosing Spot to Move to")
+        }
+
         count = 1
         coinSpots.clear()
 
-        for (i in 0..BOARD_LENGTH-1) { /// ------------------------- MOVE TO SPOTS
+        for (i in 0..<BOARD_LENGTH) { /// ------------------------- MOVE TO SPOTS
             string = "| ".black()
             string += when (game[i]) {
                 GOLD -> game[i].toString().yellow() + " "
@@ -145,9 +188,12 @@ fun getAction(player: Int): List<Any> {
     return listOf(false, player)
 }
 
-fun doTurn(player: Int) {
-    getAction(player)
+fun doTurn(player: Int): Boolean {
+    println("\nPlayer $player")
+    println("---------------------------------------")
+    val end = getAction(player)
     displayGame(0)
+    return end[0] as Boolean
 }
 
 fun setUpGame(): Boolean {
@@ -164,6 +210,7 @@ fun setUpGame(): Boolean {
             //println(lowestSlot)
         }
     }
+    if (lowestSlot > 12) lowestSlot = BOARD_LENGTH - 9
     var goldSlot = Random.nextInt(lowestSlot+1,BOARD_LENGTH-1)
     while (game[goldSlot] != EMPTY) goldSlot = Random.nextInt(lowestSlot+1,BOARD_LENGTH-1)
     setSlot(goldSlot, GOLD)
