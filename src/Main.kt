@@ -17,9 +17,9 @@ import kotlin.random.Random
 const val WAIT = 900     // how long the sleeps lasts, every Thread.Sleep should base off of this
 const val BOARD_LENGTH = 15 // Length of board
 // -- coin values   v
-const val EMPTY = 0
-const val SILVER = 1
-const val GOLD = 2
+const val EMPTY = " "
+const val SILVER = "◍"
+const val GOLD = "❂"
 // --               ^
 // display keys           v
 val important = "!!!  ".red()
@@ -139,7 +139,7 @@ fun getAction(player: Int): List<Any> {
             break
         }
 
-        if (coinToMove == 0) { /// --------------------- coin takeout --------------------------------------------------------
+        if (coinToMove == 0) { /// --------------------- coin takeout ----- ---------------------------------------------------
             if (player == 1) {
                 if (game[0] == GOLD) {
                     print("\n${question}Would you like to Take The ${"Gold".yellow()} Coin Out ${"AND WIN!!?".green()} (Yes or no)")
@@ -239,7 +239,20 @@ fun setUpGame(): Boolean {
 }
 
 fun displayGame() {
-    println(game)
+    val tsLength = 5
+    val divider = "┃"
+
+    val title = (divider + ("OLD " + "G" + GOLD.yellow() + "LD").padStart((BOARD_LENGTH*tsLength)/2)).padEnd(BOARD_LENGTH*tsLength) + divider
+
+    val topBracket = ("╭" + ("─".repeat(tsLength)).repeat(BOARD_LENGTH) + "╮").col(255,255,255)
+    val underTitleBracket = ("├" + ("─".repeat(tsLength-1) + "┬").repeat(BOARD_LENGTH-1) + "─".repeat(tsLength) + "┫")
+
+    println(topBracket)
+    println(title)
+    println(underTitleBracket)
+    for (i in 0..<BOARD_LENGTH) {
+        print(divider + " ${game[i]} ")
+    }
 }
 /**
  * functions plans
