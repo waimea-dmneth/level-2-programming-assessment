@@ -1,5 +1,3 @@
-import sun.invoke.empty.Empty
-import kotlin.concurrent.thread
 import kotlin.random.Random
 
 /**
@@ -21,32 +19,42 @@ const val EMPTY = " "
 const val SILVER = "●"
 const val GOLD = "⎊"
 // --               ^
-// display keys           v
+// display keys     v       v       v       v         v
+const val TITLE = 0
+const val BOX = 1
+const val STRING = 2
+const val SPACE = 3
+const val tsLength = 5
+const val divider = "│"
+// ---------------------------------
 val important = "!!!  ".red()
 val question = "???  ".green()
 val information = "+++  ".yellow()
-// --                     ^
+
+// --   ---- ^ ---- ^ ----- ^ ----- ^ ------- ^ ----- ^ ---
+val game = mutableListOf<Any>()  // game table
 var coinStash: Int = 40
 var coinPot: Int = 5
-val game = mutableListOf<Any>()  // game table
+var prevBracket: Int? = null
 //initiate vars and vals -- plan
 
 fun main() {
-    println("${question}Whats yer name")
-    println("Name: ")
-    val Name = "skib"//readln()
+    setUp()
+    displayGame(TITLE,"", listOf(1,2))
+    displayGame(STRING,"${question}Whats yer name?", listOf(1,2))
+    print("$divider Name: ")
+    val name = readln()
 
     while (coinStash > 0) { // loop through turns till gold coin is removed -- plan
-        setUp()
-        displayGame()
-        println()
-        println("${question}How many of your coins do you want to place on the next board " + "(Max 9)".red())
-        print("Amount: ")
+
+        displayGame(SPACE,"", listOf(1,2))
+        displayGame(STRING,"${question}How many of your coins do you want to place on the next board " + "(Max 9) ".red(), listOf(1,2))
+        print("$divider Amount: ")
         coinPot = readln().toInt()
         val bet = coinPot
         coinStash -= coinPot
         setUpGame()
-        displayGame()
+        displayGame(-1,"", listOf(1,2))
 
         var player: Int = Random.nextInt(1, 2)
         while (true) {
@@ -59,11 +67,11 @@ fun main() {
         }
         when (player) {
             1 -> {
-                println("${important}You Won!".green() + Name)
+                println("${important}You Won!".green() + name)
                 coinStash += (bet * 1.5).toInt()
                 println("${important}CoinStash $coinStash")
             }
-            2 -> println("You Lost! ".red() + Name)
+            2 -> println("You Lost! ".red() + name)
         }
         game.clear()
     }
@@ -213,7 +221,7 @@ fun doTurn(player: Int): Boolean {
     println("\nPlayer $player")
     println("---------------------------------------")
     val end = getAction(player)
-    displayGame()
+    displayGame(-1,"", listOf(1,2))
     return end[0] as Boolean
 }
 
@@ -239,32 +247,62 @@ fun setUpGame(): Boolean {
     return true
 }
 
-fun displayGame() {
-    val tsLength = 5
-    val divider = "│"
+
+
+fun displayGame(type:Int, string:String, fillNums:List<Any>) {  // display setup
 
     val title = (divider + "OLD G${GOLD.yellow()}LD".padStart((BOARD_LENGTH*tsLength)/2+13).padEnd(BOARD_LENGTH*tsLength+9) + divider)
 
-    val topBracket = "╭" + "─".repeat(BOARD_LENGTH * tsLength) + "╮"
-    val topBoxBracket = ("├" + ("─".repeat(tsLength-1) + "┬").repeat(BOARD_LENGTH-1) + "─".repeat(tsLength) + "┤")
+    val bracket = "├" + "─".repeat(BOARD_LENGTH * tsLength) + "┤"
+    val roundBracket = "╭" + "─".repeat(BOARD_LENGTH * tsLength) + "╮"
+    val bottomBoxBracket = ("├" + ("─".repeat(tsLength-1) + "┴").repeat(BOARD_LENGTH-1) + "─".repeat(tsLength) + "┤")
+    val boxBracket = ("├" + ("─".repeat(tsLength-1) + "┬").repeat(BOARD_LENGTH-1) + "─".repeat(tsLength) + "┤")
+    val boxConnectorBracket = ("├" + ("─".repeat(tsLength-1) + "┼").repeat(BOARD_LENGTH-1) + "─".repeat(tsLength) + "┤")
+    val endBracket = "╰" + "─".repeat(BOARD_LENGTH * tsLength) + "╯"
 
     fun fillBox() {
-        var string:String
+        var strang:String
         for (i in 0..<BOARD_LENGTH) {
-            string = when (game[i]) {
+            strang = when (game[i]) {
                 GOLD -> game[i].toString().yellow() + " "
                 else -> game[i].toString()
             }
 
-            print(divider + " $string ".padEnd(tsLength-1))
+            print(divider + " $strang ".padEnd(tsLength-1))
         }
         println(" $divider")
     }
 
-    println(topBracket)
-    println(title)
-    println(topBoxBracket)
-    fillBox()
+// display code  --------------------------------------------------------------------------------------------------------------------------------------
+
+    when (type) {
+        TITLE -> {
+            println(roundBracket)
+            println(title)
+            prevBracket = STRING
+        }
+        SPACE -> {
+            println(divider.padEnd(BOARD_LENGTH*tsLength+1) + divider)
+            prevBracket = STRING
+        }
+        BOX -> {}
+        STRING -> {
+            when (prevBracket) {
+                BOX -> println(bottomBoxBracket)
+                else -> println(bracket)
+            }
+            println(divider + string.padEnd(BOARD_LENGTH*tsLength+9) + divider)
+            prevBracket = STRING
+        }
+        else -> println(endBracket)
+    }
+
+//    println(boxBracket)
+//    fillBox()
+//    println(boxConnectorBracket)
+//    println(boxBracket)
+
+
 }
 /**
  * functions plans
