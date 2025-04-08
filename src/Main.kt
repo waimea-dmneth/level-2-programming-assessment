@@ -18,8 +18,8 @@ const val WAIT = 900     // how long the sleeps lasts, every Thread.Sleep should
 const val BOARD_LENGTH = 15 // Length of board
 // -- coin values   v
 const val EMPTY = " "
-const val SILVER = "◍"
-const val GOLD = "❂"
+const val SILVER = "●"
+const val GOLD = "⎊"
 // --               ^
 // display keys           v
 val important = "!!!  ".red()
@@ -30,9 +30,10 @@ var coinStash: Int = 40
 var coinPot: Int = 5
 val game = mutableListOf<Any>()  // game table
 //initiate vars and vals -- plan
+
 fun main() {
     println("${question}Whats yer name")
-    print("Name: ")
+    println("Name: ")
     val Name = "skib"//readln()
 
     while (coinStash > 0) { // loop through turns till gold coin is removed -- plan
@@ -240,23 +241,35 @@ fun setUpGame(): Boolean {
 
 fun displayGame() {
     val tsLength = 5
-    val divider = "┃"
+    val divider = "│"
 
-    val title = (divider + ("OLD " + "G" + GOLD.yellow() + "LD").padStart((BOARD_LENGTH*tsLength)/2)).padEnd(BOARD_LENGTH*tsLength) + divider
+    val title = (divider + "OLD G${GOLD.yellow()}LD".padStart((BOARD_LENGTH*tsLength)/2+13).padEnd(BOARD_LENGTH*tsLength+9) + divider)
 
-    val topBracket = ("╭" + ("─".repeat(tsLength)).repeat(BOARD_LENGTH) + "╮").col(255,255,255)
-    val underTitleBracket = ("├" + ("─".repeat(tsLength-1) + "┬").repeat(BOARD_LENGTH-1) + "─".repeat(tsLength) + "┫")
+    val topBracket = "╭" + "─".repeat(BOARD_LENGTH * tsLength) + "╮"
+    val topBoxBracket = ("├" + ("─".repeat(tsLength-1) + "┬").repeat(BOARD_LENGTH-1) + "─".repeat(tsLength) + "┤")
+
+    fun fillBox() {
+        var string:String
+        for (i in 0..<BOARD_LENGTH) {
+            string = when (game[i]) {
+                GOLD -> game[i].toString().yellow() + " "
+                else -> game[i].toString()
+            }
+
+            print(divider + " $string ".padEnd(tsLength-1))
+        }
+        println(" $divider")
+    }
 
     println(topBracket)
     println(title)
-    println(underTitleBracket)
-    for (i in 0..<BOARD_LENGTH) {
-        print(divider + " ${game[i]} ")
-    }
+    println(topBoxBracket)
+    fillBox()
 }
 /**
  * functions plans
  * - one for changing main list
  * - one that updates and visualises the game
- * - more coming
+ * - other ones
  */
+
