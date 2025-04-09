@@ -54,7 +54,6 @@ fun main() {
         val bet = coinPot
         coinStash -= coinPot
         setUpGame()
-        displayGame(-1,"", listOf(1,2))
 
         var player: Int = Random.nextInt(1, 2)
         while (true) {
