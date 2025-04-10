@@ -24,6 +24,7 @@ const val TITLE = 0
 const val BOX = 1
 const val STRING = 2
 const val SPACE = 3
+const val SPOT = 4
 const val tsLength = 5
 const val divider = "│"
 // ---------------------------------
@@ -36,6 +37,7 @@ val game = mutableListOf<Any>()  // game table
 var coinStash: Int = 40
 var coinPot: Int = 5
 var prevBracket: Int? = null
+var name = ""
 //initiate vars and vals -- plan
 
 fun main() {
@@ -43,11 +45,10 @@ fun main() {
     displayGame(TITLE,"", listOf(1,2))
     displayGame(STRING,"${question}Whats yer name?", listOf(1,2))
     print("$divider Name: ")
-    val name = readln()
+    name = readln()
 
     while (coinStash > 0) { // loop through turns till gold coin is removed -- plan
 
-        displayGame(SPACE,"", listOf(1,2))
         displayGame(STRING,"${question}How many of your coins do you want to place on the next board " + "(Max 9) ".red(), listOf(1,2))
         print("$divider Amount: ")
         coinPot = readln().toInt()
@@ -92,9 +93,9 @@ fun setSlot(index: Int, setTo: Any): Boolean {
 
 fun getAction(player: Int): List<Any> {
     var actionChose: Boolean = false
-    while (!actionChose) { println()
-        if (player == 1) println("${question}What Coin Do You Wish To Move? (1-6 in the [])")
-        if (player == 2) println("${information}Choosing Coin")
+    while (!actionChose) {
+        if (player == 1) displayGame(STRING,"${question}What Coin Do You Wish To Move? (1-6 in the ${"[]".green()})", listOf(1,2))
+        if (player == 2) displayGame(STRING,"${information}Choosing Coin", listOf(1,2))
 
         val coinSpots = mutableListOf<Int>()
         val pickableCoins = mutableListOf<Int>()
@@ -109,10 +110,7 @@ fun getAction(player: Int): List<Any> {
                     string = "| $EMPTY ".grey()
                 }
                 else -> {
-                    string = "| ${game[i]} "
-                    if (game[i] == GOLD) string = string.yellow()
                     if (coinSpots.isEmpty() || game[i-1] == EMPTY) {
-                        string += "[$displayCount]".green()
                         pickableCoins.add(displayCount-1,i)
                         displayCount++
                     }
@@ -120,10 +118,10 @@ fun getAction(player: Int): List<Any> {
                     count++
                 }
             }
-            print(string)
         }
-        println("|")
-
+        displayGame(BOX,"", listOf(1,2))
+        displayGame(SPOT,"",pickableCoins)
+        displayGame(SPACE,"", listOf(1,2))
         var coinToMove = 1
         when (player) {
             1 -> {
@@ -217,10 +215,10 @@ fun getAction(player: Int): List<Any> {
 
 fun doTurn(player: Int): Boolean {
     Thread.sleep((WAIT + 100).toLong())
-    println("\nPlayer $player")
-    println("---------------------------------------")
+    if (player == 1) displayGame(STRING,"P1: $name", listOf(1,2))
+    else displayGame(STRING,"P2: AI", listOf(1,2))
+    displayGame(SPACE, "", listOf(1,2))
     val end = getAction(player)
-    displayGame(-1,"", listOf(1,2))
     return end[0] as Boolean
 }
 
@@ -249,9 +247,9 @@ fun setUpGame(): Boolean {
 
 
 fun displayGame(type:Int, string:String, fillNums:List<Any>) {  // display setup
+    var strang:String = EMPTY
 
     val title = (divider + "OLD G${GOLD.yellow()}LD".padStart((BOARD_LENGTH*tsLength)/2+13).padEnd(BOARD_LENGTH*tsLength+9) + divider)
-
     val bracket = "├" + "─".repeat(BOARD_LENGTH * tsLength) + "┤"
     val roundBracket = "╭" + "─".repeat(BOARD_LENGTH * tsLength) + "╮"
     val bottomBoxBracket = ("├" + ("─".repeat(tsLength-1) + "┴").repeat(BOARD_LENGTH-1) + "─".repeat(tsLength) + "┤")
@@ -260,7 +258,6 @@ fun displayGame(type:Int, string:String, fillNums:List<Any>) {  // display setup
     val endBracket = "╰" + "─".repeat(BOARD_LENGTH * tsLength) + "╯"
 
     fun fillBox() {
-        var strang:String
         for (i in 0..<BOARD_LENGTH) {
             strang = when (game[i]) {
                 GOLD -> game[i].toString().yellow() + " "
@@ -272,6 +269,21 @@ fun displayGame(type:Int, string:String, fillNums:List<Any>) {  // display setup
         println(" $divider")
     }
 
+    fun boxSpots() {
+        for (i in 0..<BOARD_LENGTH) {
+            for (j in fillNums.indices) {
+                if (fillNums[j] == i) {
+                    strang = "[${j + 1}]"
+                    break
+                }
+                strang = "   "
+            }
+            print(divider + strang.padEnd(tsLength-1).green())
+        }
+        println(" $divider")
+    }
+
+
 // display code  --------------------------------------------------------------------------------------------------------------------------------------
 
     when (type) {
@@ -282,14 +294,31 @@ fun displayGame(type:Int, string:String, fillNums:List<Any>) {  // display setup
         }
         SPACE -> {
             println(divider.padEnd(BOARD_LENGTH*tsLength+1) + divider)
-            prevBracket = STRING
+            prevBracket = SPACE
         }
-        BOX -> {}
-        STRING -> {
+        BOX -> {
             when (prevBracket) {
+                BOX -> println(boxConnectorBracket)
+                else -> println(boxBracket)
+            }
+            fillBox()
+            prevBracket = BOX
+        }
+        SPOT -> {
+            when (prevBracket) {
+                BOX -> println(boxConnectorBracket)
+                else -> println(boxBracket)
+            }
+            boxSpots()
+            println(bottomBoxBracket)
+            prevBracket = SPACE
+        }
+        STRING -> {
+            if (prevBracket != SPACE) when (prevBracket) {
                 BOX -> println(bottomBoxBracket)
                 else -> println(bracket)
             }
+
             println(divider + string.padEnd(BOARD_LENGTH*tsLength+9) + divider)
             prevBracket = STRING
         }
