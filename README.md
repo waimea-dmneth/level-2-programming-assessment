@@ -26,7 +26,7 @@ The project is written in the [Kotlin](https://kotlinlang.org) programming langu
 
 ## Project Description
 
-This is a two-player game, played on a one-dimensional grid with coins, where the aim is to win by being the player who **removes the gold coin**. 
+This is a two-player game against an "ai", played on a one-dimensional grid with coins, where the aim is to win by being the player who **removes the gold coin**. 
 
 
 

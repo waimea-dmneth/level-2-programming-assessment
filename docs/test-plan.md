@@ -26,7 +26,7 @@ the game should fill the board with the amount of coins decided in random places
 
 ## Player Moves
 
-the player has proper control over what they want to do and that they cant do stuff theyre not meant to
+the player has proper control over what they want to do and that they cant do stuff they're not meant to
 
 ### Test Data To Use
 

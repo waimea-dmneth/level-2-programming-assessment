@@ -11,8 +11,8 @@ This checklist can be used to gauge progress towards different levels of success
 The game functions correctly and meets the specification:
 - [x] The game is **playable**
 - [ ] The **instructions** for the game are available in-game
-- [ ] **Two players** can play
-- [ ] Player **names** are used to identify each player
+- [x] **Two players** can play
+- [x] Player **names** are used to identify each player
 - [x] Players **take turns** to play
 - [x] Players provides **input data** to the game (e.g. moves to make)
 - [x] The **current status** of the game is shown after each play
