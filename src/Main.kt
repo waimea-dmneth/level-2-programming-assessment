@@ -71,13 +71,10 @@ fun main() {
             1 -> {
                 displayGame(STRING,"$important  You Won!".green() + name, listOf(1,2))
                 coinStash += (bet * 1.5).toInt()
-                displayGame(STRING,"$important  CoinStash: $coinStash", listOf(1,2))
-
             }
             2 -> {
                 displayGame(STRING,"$important  You Lost! ".red() + name, listOf(1,2))
                 coinStash -= ((bet * 1.5)*2).toInt()
-                displayGame(STRING,"$important  CoinStash: $coinStash", listOf(1,2))
             }
         }
         game.clear()

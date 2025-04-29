@@ -26,17 +26,17 @@ The program stores data using:
 
 The program structure:
 - [x] Is broken up into **functions**: a main function, plus other supporting functions 
-- [ ] Contains **sequences** of instructions
-- [ ] Uses **conditional** instructions to control the program flow
-- [ ] Uses program **branches** (if...else, when, etc.)
-- [ ] Uses **iteration** (loops) to repeat things (for, while, etc.)
+- [x] Contains **sequences** of instructions
+- [x] Uses **conditional** instructions to control the program flow
+- [x] Uses program **branches** (if...else, when, etc.)
+- [x] Uses **iteration** (loops) to repeat things (for, while, etc.)
 
 ### Program Documentation
 
 The program code:
-- [ ] Is **indented** correctly
+- [x] Is **indented** correctly
 - [ ] Is **laid-out clearly**
-- [ ] Contains **comments** that help in understanding how it works
+- [x] Contains **comments** that help in understanding how it works
 
 ### Program Testing
 
@@ -48,8 +48,8 @@ The program has been tested and there is documented evidence that:
   - [ ] scoring (if any)
   - [ ] players winning
   - [ ] final feedback (if appropriate)
-- [ ] **Valid (expected) data** has been used to test **all data inputs**
-- [ ] Where tests have failed, **fixes** are discussed and **tests re-run**
+- [x] **Valid (expected) data** has been used to test **all data inputs**
+- [x] Where tests have failed, **fixes** are discussed and **tests re-run**
 
 ---
 
@@ -58,16 +58,16 @@ The program has been tested and there is documented evidence that:
 ### Program Code
 
 The program stores data using variables, where:
-- [ ] Variable **names are well-chosen** (relating to their purpose)
-- [ ] Variable names **begin with lowercase**
-- [ ] Naming is consistent, either **camelCase or snake_case**
-- [ ] Variables are **scoped appropriately** (global or local to a function)
-- [ ] **Global** variables are only used if **genuinely needed**
+- [x] Variable **names are well-chosen** (relating to their purpose)
+- [x] Variable names **begin with lowercase**
+- [x] Naming is consistent, either **camelCase or snake_case**
+- [x] Variables are **scoped appropriately** (global or local to a function)
+- [x] **Global** variables are only used if **genuinely needed**
 
 The program uses functions appropriately, where:
-- [ ] At least one uses **parameters** to pass data into it
-- [ ] At least one provides a **return value** to the calling code
-- [ ] The function **names are well-chosen**, relating to their functionality 
+- [x] At least one uses **parameters** to pass data into it
+- [x] At least one provides a **return value** to the calling code
+- [x] The function **names are well-chosen**, relating to their functionality 
 
 ### Program Documentation
 
@@ -112,6 +112,6 @@ The program code:
 
 The program has been tested to be **robust**:
 - [ ] With a **comprehensive and thorough** test plan
-- [ ] Testing **regularly** throughput development, allowing **time for debugging**
+- [x] Testing **regularly** throughput development, allowing **time for debugging**
 - [ ] Using test values that cover **invalid** (unexpected) cases
 - [ ] Resulting in a program that **copes appropriately** with invalid inputs

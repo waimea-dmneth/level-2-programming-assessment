@@ -38,4 +38,45 @@ smooth control for the player with no errors or unfair advantages
 
 ---
 
+## Player takes turn
+
+players swap between turns between ai and player
+
+### Test Data To Use
+
+small clip of player taking turn then ai taking turn till game end
+
+### Expected Test Result
+
+they swap turns after doing their turn
+
+---
+
+## Player gains coins back into their coin stash and looses them
+
+the player has proper control over what they want to do and that they cant do stuff they're not meant to
+
+### Test Data To Use
+
+output and proof of corrections where problems happened and code that stop stuff like coins going past each other and how the player selects what they want to do
+
+### Expected Test Result
+
+smooth control for the player with no errors or unfair advantages
+
+---
+
+## Player can win and lose
+
+the player has proper control over what they want to do and that they cant do stuff they're not meant to
+
+### Test Data To Use
+
+output and proof of corrections where problems happened and code that stop stuff like coins going past each other and how the player selects what they want to do
+
+### Expected Test Result
+
+smooth control for the player with no errors or unfair advantages
+
+---
 
