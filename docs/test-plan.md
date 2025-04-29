@@ -38,7 +38,7 @@ smooth control for the player with no errors or unfair advantages
 
 ---
 
-## Player takes turn
+## Player takes turns
 
 players swap between turns between ai and player
 

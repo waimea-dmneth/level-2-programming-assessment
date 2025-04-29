@@ -15,11 +15,10 @@ import kotlin.random.Random
  */
 const val WAIT = 900     // how long the sleeps lasts, every Thread.Sleep should base off of this
 const val BOARD_LENGTH = 15 // Length of board
-// -- coin values   v
+// -- coin values   v v   v    v   v
 const val EMPTY = " "
 const val SILVER = "●"
 const val GOLD = "⎊"
-// --               ^
 // display keys     v       v       v       v         v
 const val TITLE = 0
 const val BOX = 1
@@ -36,24 +35,39 @@ val information = "+++".yellow()
 
 // --   ---- ^ ---- ^ ----- ^ ----- ^ ------- ^ ----- ^ ---
 val game = mutableListOf<Any>()  // game table
-var coinStash: Int = 40
+var coinStash: Int = BOARD_LENGTH * 3 - 5
 var coinPot: Int = 5
 var prevBracket: Int? = null
 var name = ""
 //initiate vars and vals -- plan
 
 fun main() {
+    var highScore = coinStash
     setUp()
+
+    println("The goal is to get the other person to put the gold coin into the first slot so you take it out".green())
+    println("whoever take the gold coin out wins (you will be against an ai)".green())
+    println("you can only move coins left and cannot jump over other coins".green())
+    println("the board is $BOARD_LENGTH tiles long and has a set number of coins in it that you choose from a coinstash".green())
+    println("winning will add coins chosen * 1.8 to your coinstash, but losing will make you lose that x the amount in your coinstash/10 ".green())
+    println("don't loose all your money and get as much as possible for a high score. bet more but at a greater risk of losing".green())
+    println("\n")
+
     displayGame(TITLE,"", listOf(1,2))
     displayGame(STRING,"$question  Whats yer name?", listOf(1,2))
     print("$DIVIDER Name: ")
     name = readln().blue()
 
-    while (coinStash > 0) { // loop through turns till gold coin is removed -- plan
+    while (coinStash >= 0) { // loop through turns till gold coin is removed -- plan
         displayGame(STRING,"$important  CoinStash: $coinStash", listOf(1,2))
-        displayGame(STRING,"$question  How many of your coins do you want to place on the next board " + "(Max ${BOARD_LENGTH-3}) ".red(), listOf(1,2))
-        print("$DIVIDER Amount: ")
-        coinPot = readln().toInt()
+        var maxCoins = BOARD_LENGTH-3
+        if (maxCoins > coinStash) maxCoins = coinStash
+        coinPot = maxCoins+1
+        while (coinPot > maxCoins || coinPot < 1) {
+            displayGame(STRING,"$question  How many of your coins do you want to place on the next board " + "(Max $maxCoins) ".red(), listOf(1,2))
+            print("$DIVIDER Amount: ")
+            coinPot = readln().toInt()
+        }
         val bet = coinPot
         coinStash -= coinPot
         setUpGame()
@@ -67,19 +81,24 @@ fun main() {
                 2 -> player = 1
             }
         }
+
         when (player) {
             1 -> {
-                displayGame(STRING,"$important  You Won!".green() + name, listOf(1,2))
+                displayGame(STRING,("$important  You Won! and gained ${(bet * 1.8 - bet).toInt()} coins: ". green()) + name, listOf(1,2))
                 coinStash += (bet * 1.5).toInt()
             }
             2 -> {
-                displayGame(STRING,"$important  You Lost! ".red() + name, listOf(1,2))
-                coinStash -= ((bet * 1.5)*2).toInt()
+                displayGame(STRING,("$important  You lost ${((bet * 1.5)*coinStash/10 + bet).toInt()} coins: ".red()) + name, listOf(1,2))
+                coinStash -= ((bet * 1.5)*coinStash/10).toInt()
+                if (coinStash == 0) break
             }
         }
+        if (coinStash > highScore) highScore = coinStash
         game.clear()
     }
-    // do something for winner -- plan
+    displayGame(STRING,"$important  You ran out of money and are now broke! ".red() + name, listOf(1,2))
+    displayGame(STRING,"$important  you got a High Score of " + highScore.toString().yellow(), listOf(1,2))
+    displayGame(-999999999, "", listOf(1,2))
 }
 
 fun setUp() {
@@ -98,7 +117,7 @@ fun setSlot(index: Int, setTo: Any): Boolean {
 fun getAction(player: Int): List<Any> {
     var actionChose: Boolean = false
     while (!actionChose) {
-        if (player == 1) displayGame(STRING,"$question  What Coin Do You Wish To Move? (1-6 in the ${"[]".green()})", listOf(1,2))
+        if (player == 1) displayGame(STRING,"$question  What Coin Do You Wish To Move? (1-6 in the ${"[]".green()})              ", listOf(1,2))
         if (player == 2) displayGame(STRING,"$information  Choosing Coin", listOf(1,2))
 
         val coinSpots = mutableListOf<Int>()
@@ -157,8 +176,11 @@ fun getAction(player: Int): List<Any> {
                     displayGame(STRING,"$question  Would you like to Take The Coin Out? (Yes or no)",listOf(1,2))
                 }
             }
+            print("$DIVIDER ")
+
             var takeOut = "Y"
             if (player == 1) takeOut = readln().first().uppercase()
+            else println()
 
             if (takeOut != "Y") continue
             displayGame(STRING,"$important  Coin Was Removed", listOf(1,2))

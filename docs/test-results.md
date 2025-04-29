@@ -6,7 +6,7 @@ The test results show the actual outcome of the testing, following the [Test Pla
 
 ## The game sets up
 
-when the code is run the game sets everything up so the player can play
+when the code is run the game sets everything up so the player can play and no coin can start in the first slot
 
 ### Test Data Used
 

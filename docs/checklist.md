@@ -10,7 +10,7 @@ This checklist can be used to gauge progress towards different levels of success
 
 The game functions correctly and meets the specification:
 - [x] The game is **playable**
-- [ ] The **instructions** for the game are available in-game
+- [x] The **instructions** for the game are available in-game
 - [x] **Two players** can play
 - [x] Player **names** are used to identify each player
 - [x] Players **take turns** to play
@@ -35,16 +35,16 @@ The program structure:
 
 The program code:
 - [x] Is **indented** correctly
-- [ ] Is **laid-out clearly**
+- [x] Is **laid-out clearly**
 - [x] Contains **comments** that help in understanding how it works
 
 ### Program Testing
 
 The program has been tested and there is documented evidence that:
 - [ ] The game is **fully functional**, showing testing of:
-  - [ ] game setup
-  - [ ] player moves
-  - [ ] players taking turns
+  - [x] game setup
+  - [x] player moves
+  - [x] players taking turns
   - [ ] scoring (if any)
   - [ ] players winning
   - [ ] final feedback (if appropriate)
