@@ -52,31 +52,31 @@ they swap turns after doing their turn
 
 ---
 
-## Player gains coins back into their coin stash and looses them
+## Player gains coins back into their coin stash and looses them and highscore is correct
 
 the player has proper control over what they want to do and that they cant do stuff they're not meant to
 
 ### Test Data To Use
 
-output and proof of corrections where problems happened and code that stop stuff like coins going past each other and how the player selects what they want to do
+the output that shows their coins stash changes when they win or loose
 
 ### Expected Test Result
 
-smooth control for the player with no errors or unfair advantages
+the coin stash changes when you lose or win the round and the highscore updates properly
 
 ---
 
 ## Player can win and lose
 
-the player has proper control over what they want to do and that they cant do stuff they're not meant to
+the player wins rounds and loses as intended and game ends when they run out of money
 
 ### Test Data To Use
 
-output and proof of corrections where problems happened and code that stop stuff like coins going past each other and how the player selects what they want to do
+output once again when they take out the gold coin they win and when the ai does they lose
 
 ### Expected Test Result
 
-smooth control for the player with no errors or unfair advantages
+it works as intended
 
 ---
 

@@ -85,7 +85,7 @@ fun main() {
         when (player) {
             1 -> {
                 displayGame(STRING,("$important  You Won! and gained ${(bet * 1.8 - bet).toInt()} coins: ". green()) + name, listOf(1,2))
-                coinStash += (bet * 1.5).toInt()
+                coinStash += (bet * 1.8).toInt()
             }
             2 -> {
                 displayGame(STRING,("$important  You lost ${((bet * 1.5)*coinStash/10 + bet).toInt()} coins: ".red()) + name, listOf(1,2))
