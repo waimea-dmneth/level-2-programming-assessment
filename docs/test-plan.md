@@ -66,7 +66,7 @@ the coin stash changes when you lose or win the round and the highscore updates 
 
 ---
 
-## Player can win and lose
+## Player can win and lose -- (edit) this was shown in the test above
 
 the player wins rounds and loses as intended and game ends when they run out of money
 

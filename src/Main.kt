@@ -124,22 +124,16 @@ fun getAction(player: Int): List<Any> {
         val pickableCoins = mutableListOf<Int>()
         var count = 1
         var displayCount = count
-        var string: String
 
         Thread.sleep((WAIT/6).toLong())
         for (i in 0..<BOARD_LENGTH) { // -------------------------------POSSIBLE SPOTS TO MOVE
-            when (game[i]) {
-                EMPTY -> {
-                    string = "| $EMPTY ".grey()
+            if (game[i] != EMPTY) {
+                if (coinSpots.isEmpty() || game[i-1] == EMPTY) {
+                    pickableCoins.add(displayCount-1,i)
+                    displayCount++
                 }
-                else -> {
-                    if (coinSpots.isEmpty() || game[i-1] == EMPTY) {
-                        pickableCoins.add(displayCount-1,i)
-                        displayCount++
-                    }
-                    coinSpots.add(count-1,i)
-                    count++
-                }
+                coinSpots.add(count-1,i)
+                count++
             }
         }
         displayGame(BOX,"", listOf(1,2))

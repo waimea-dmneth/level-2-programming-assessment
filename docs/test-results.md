@@ -52,7 +52,7 @@ the player swaps turns with ai multiple times
 
 ---
 
-## Player gains coins back into their coin stash and loses them and highscore is correct also shows winning and losing
+## Player gains coins back into their coin stash and loses them and highscore is correct. also shows winning and losing
 
 coin stash changes with every win/loss and highscore also changes 
 

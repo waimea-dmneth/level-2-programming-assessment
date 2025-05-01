@@ -45,9 +45,9 @@ The program has been tested and there is documented evidence that:
   - [x] game setup
   - [x] player moves
   - [x] players taking turns
-  - [ ] scoring (if any)
-  - [ ] players winning
-  - [ ] final feedback (if appropriate)
+  - [x] scoring (if any)
+  - [x] players winning
+  - [x] final feedback (if appropriate)
 - [x] **Valid (expected) data** has been used to test **all data inputs**
 - [x] Where tests have failed, **fixes** are discussed and **tests re-run**
 
