@@ -62,12 +62,10 @@ messing with winning and losing to make sure its happening at the right time and
 
 ### Test Result
 
-the coinstash in 40 and its the highscore when they lose which was the highest it went so that works
-when they ran out of coins from losing 46 the game ended and they got their highscore
+the coinstash in 40 and its the highscore when they lose which was the highest it went so that works. when they ran out of coins from losing 46 the game ended and they got their highscore
 ![losingscore.gif](screenshots/losingscore.gif)
 
-this shows winning works and i found a mistake in the code fix below ss
-the score now also updates properly
+this shows winning works and i found a mistake in the code fix below ss. the score now also updates properly
 ![foundAMistake.png](screenshots/foundAMistake.png)
 
 i had changed the multiplier to 1.8x but i left it at 1.5x in the actual important part of the code
