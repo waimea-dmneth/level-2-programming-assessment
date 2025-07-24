@@ -41,7 +41,7 @@ The program code:
 ### Program Testing
 
 The program has been tested and there is documented evidence that:
-- [ ] The game is **fully functional**, showing testing of:
+- [x] The game is **fully functional**, showing testing of:
   - [x] game setup
   - [x] player moves
   - [x] players taking turns
