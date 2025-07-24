@@ -41,11 +41,16 @@ var prevBracket: Int? = null
 var name = ""
 //initiate vars and vals -- plan
 
+
+/*
+main function
+- handles looping, coins, player & winning and losing
+ */
 fun main() {
     var highScore = coinStash
     setUp()
 
-    println("The goal is to get the other person to put the gold coin into the first slot so you take it out".green())
+    println("The goal is to get the other person to put the gold coin into the first slot so you take it out".green())  // description of game for player
     println("whoever take the gold coin out wins (you will be against an ai)".green())
     println("you can only move coins left and cannot jump over other coins".green())
     println("the board is $BOARD_LENGTH tiles long and has a set number of coins in it that you choose from a coinstash".green())
@@ -101,19 +106,23 @@ fun main() {
     displayGame(-999999999, "", listOf(1,2))
 }
 
-fun setUp() {
+fun setUp() {  // sets up board list
     for (i in 0..<BOARD_LENGTH) {
         game.add(EMPTY)
     }
 }
 
-fun setSlot(index: Int, setTo: Any): Boolean {
+fun setSlot(index: Int, setTo: Any): Boolean { // sets slot of game list and checks for options returning false for failed true for success
     if (index < 0 || index >= game.size) return false
     if (game[index] != EMPTY) return false
     game[index] = setTo
     return true
 }
 
+/* -- get action
+- gets player action and controls ai actions
+- returns round finish (BOOLEAN) and player
+ */
 fun getAction(player: Int): List<Any> {
     var actionChose: Boolean = false
     while (!actionChose) {
@@ -226,7 +235,7 @@ fun getAction(player: Int): List<Any> {
     return listOf(false, player)
 }
 
-fun doTurn(player: Int): Boolean {
+fun doTurn(player: Int): Boolean {  // cycles between turns, connects main func and get action (seperate for readiblitiy)
     displayGame(BOX,"", listOf(1,2))
     displayGame(BRACKET,"", listOf(1,2))
 
@@ -239,7 +248,7 @@ fun doTurn(player: Int): Boolean {
     return end[0] as Boolean
 }
 
-fun setUpGame(): Boolean {
+fun setUpGame(): Boolean {  // sets up coins in slots, takes players coin input and randomizes it into table
     var lowestSlot = 15
     if (coinPot > BOARD_LENGTH || coinPot == 0) return false
     while (coinPot > 0) {
@@ -263,8 +272,10 @@ fun setUpGame(): Boolean {
 
 
 
-fun displayGame(type:Int, string:String, fillNums:List<Any>) {  // display setup
+fun displayGame(type:Int, string:String, fillNums:List<Any>) {  // display setup, purely cosemetic purposes
     var strang:String = EMPTY
+
+    // -------------------------- visual box values ---------------------------------------------------------------------------------------------------------
 
     val title = (DIVIDER + "OLD G${GOLD.yellow()}LD".padStart((BOARD_LENGTH*TSLENGTH)/2+13).padEnd(BOARD_LENGTH*TSLENGTH+9) + DIVIDER)
     val bracket = "├" + "─".repeat(BOARD_LENGTH * TSLENGTH) + "┤"
