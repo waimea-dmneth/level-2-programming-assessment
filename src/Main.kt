@@ -20,6 +20,7 @@ const val EMPTY = " "
 const val SILVER = "●"
 const val GOLD = "⎊"
 // display keys     v       v       v       v         v
+// used for display game function keys , val, type
 const val TITLE = 0
 const val BOX = 1
 const val STRING = 2
@@ -63,30 +64,43 @@ fun main() {
     print("$DIVIDER Name: ")
     name = readln().blue()
 
-    while (coinStash >= 0) { // loop through turns till gold coin is removed -- plan
+    // Keep looping while there are coins available
+    while (coinStash >= 0) {
         displayGame(STRING,"$important  CoinStash: $coinStash", listOf(1,2))
+
+        // How many coins can be put on the board?
         var maxCoins = BOARD_LENGTH-3
         if (maxCoins > coinStash) maxCoins = coinStash
+
+        // Keep looping until we get a valid number of coins to place
         coinPot = maxCoins+1
         while (coinPot > maxCoins || coinPot < 1) {
             displayGame(STRING,"$question  How many of your coins do you want to place on the next board " + "(Max $maxCoins) ".red(), listOf(1,2))
             print("$DIVIDER Amount: ")
             coinPot = readln().toInt()
         }
+
+        // UPdate the coins remaining
         val bet = coinPot
         coinStash -= coinPot
+
         setUpGame()
 
+        // Select a random player to go
         var player: Int = Random.nextInt(1, 2)
         while (true) {
+            // Player plays turn
             val end = doTurn(player) // change player param eventually
+            // Have they finished the game round?
             if (end) break
+            // Switch player
             when (player) {
                 1 -> player = 2
                 2 -> player = 1
             }
         }
 
+        // Round feedback
         when (player) {
             1 -> {
                 displayGame(STRING,("$important  You Won! and gained ${(bet * 1.8 - bet).toInt()} coins: ". green()) + name, listOf(1,2))
@@ -98,21 +112,32 @@ fun main() {
                 if (coinStash == 0) break
             }
         }
+
+        // High score?
         if (coinStash > highScore) highScore = coinStash
+
+        // Start over
         game.clear()
     }
+
+    // We get here when all coins are used up
     displayGame(STRING,"$important  You ran out of money and are now broke! ".red() + name, listOf(1,2))
     displayGame(STRING,"$important  you got a High Score of " + highScore.toString().yellow(), listOf(1,2))
     displayGame(-999999999, "", listOf(1,2))
 }
 
-fun setUp() {  // sets up board list
+// sets up board list to match board length
+fun setUp() {
     for (i in 0..<BOARD_LENGTH) {
         game.add(EMPTY)
     }
 }
 
-fun setSlot(index: Int, setTo: Any): Boolean { // sets slot of game list and checks for options returning false for failed true for success
+// sets slot of game list and checks for options
+// index: gameboard tile to change
+// setTO: what it attempts to change to
+// returns false for failed and true for success
+fun setSlot(index: Int, setTo: Any): Boolean {
     if (index < 0 || index >= game.size) return false
     if (game[index] != EMPTY) return false
     game[index] = setTo
@@ -121,21 +146,25 @@ fun setSlot(index: Int, setTo: Any): Boolean { // sets slot of game list and che
 
 /* -- get action
 - gets player action and controls ai actions
-- returns round finish (BOOLEAN) and player
+- returns round finish (BOOLEAN) and player value (1 or 2)
+player: the player whose turn it is
  */
 fun getAction(player: Int): List<Any> {
-    var actionChose: Boolean = false
+    var actionChose: Boolean = false // failsafe to confirm player has completed their turn
     while (!actionChose) {
         if (player == 1) displayGame(STRING,"$question  What Coin Do You Wish To Move? (1-6 in the ${"[]".green()})              ", listOf(1,2))
         if (player == 2) displayGame(STRING,"$information  Choosing Coin", listOf(1,2))
 
+        // resetting values
         val coinSpots = mutableListOf<Int>()
         val pickableCoins = mutableListOf<Int>()
         var count = 1
         var displayCount = count
 
         Thread.sleep((WAIT/6).toLong())
-        for (i in 0..<BOARD_LENGTH) { // -------------------------------POSSIBLE SPOTS TO MOVE
+
+        // ----- for loop - coins you can pick on the game board
+        for (i in 0..<BOARD_LENGTH) {
             if (game[i] != EMPTY) {
                 if (coinSpots.isEmpty() || game[i-1] == EMPTY) {
                     pickableCoins.add(displayCount-1,i)
@@ -145,25 +174,30 @@ fun getAction(player: Int): List<Any> {
                 count++
             }
         }
+
+        // displays info gathered from for loop
         displayGame(BOX,"", listOf(1,2))
         displayGame(SPOT,"",pickableCoins)
         displayGame(SPACE,"", listOf(1,2))
-        var coinToMove = 1
-        when (player) {
-            1 -> {
+
+        var coinToMove = 1 // set for ai to use if fails
+        when (player) { // when to differ between ai and player responses
+            1 -> { // player
                 print("$DIVIDER Coin?: ")
                 coinToMove = readln().toInt()
                 }
-            2 -> {
+            2 -> { // ai
                 if (pickableCoins.size != 1) coinToMove = Random.nextInt(1,pickableCoins.size)
                 if (game[0] == GOLD) coinToMove = 1
                 Thread.sleep(WAIT.toLong())
                 displayGame(STRING,"$information  Picked Coin $coinToMove", listOf(1,2))
             }
         }
+
         displayGame(SPACE,"", listOf(1,2))
-        // ------------------------------CHOICE SELECTION THINGY
-        var lowest: Int = 0
+
+        // gets the coin / or spot lowest from the selected coin
+        var lowest: Int = 0// set to 0 if it is the bottom coin
         coinToMove = pickableCoins[coinToMove-1]
         for ( i in coinToMove-1 downTo 0 ) {
             if (game[i] == EMPTY) continue
@@ -181,71 +215,83 @@ fun getAction(player: Int): List<Any> {
             }
             print("$DIVIDER ")
 
-            var takeOut = "Y"
-            if (player == 1) takeOut = readln().first().uppercase()
+            var takeOut = "Y" // auto response for ai
+            if (player == 1) takeOut = readln().first().uppercase() // player response
             else println()
 
-            if (takeOut != "Y") continue
+            if (takeOut != "Y") continue // if answer is anything other than yes it takes it as a no
             displayGame(STRING,"$important  Coin Was Removed", listOf(1,2))
 
             if (game[0] == GOLD){
                 game[0] = EMPTY
-                return listOf(true, player)
+                return listOf(true, player) // if it was a gold coin it ends game round
             }
             game[0] = EMPTY
-            return listOf(false, player)
+            return listOf(false, player) // swaps turn
         } // ------------------------------------------------------------------------------------------------------------------
 
         when (player) {
-            1 -> displayGame(STRING,"$question  Pick a Spot to Move to",listOf(1,2))
-            2 -> displayGame(STRING,"$information  Choosing Spot to Move to", listOf(1,2))
+            1 -> displayGame(STRING,"$question  Pick a Spot to Move to",listOf(1,2)) // player response
+            2 -> displayGame(STRING,"$information  Choosing Spot to Move to", listOf(1,2)) // ai response
         }
 
         count = 1
-        coinSpots.clear()
+        coinSpots.clear() // clears coinspots to reuse table
         Thread.sleep((WAIT/6).toLong())
-        for (i in 0..<BOARD_LENGTH) { /// ------------------------- MOVE TO SPOTS
+
+        // for loop to check for spots you can move to (uses earlier set lowest var)
+        for (i in 0..<BOARD_LENGTH) {
             if (i in lowest..<coinToMove && game[i] == EMPTY) {
                 coinSpots.add(count-1,i)
                 count++
             }
         }
+
+        // displays for loop info gathered
         displayGame(BOX,"", listOf(1,2))
         displayGame(SPOT,"",coinSpots)
         displayGame(SPACE,"", listOf(1,2))
 
-        var moveTo = 1
+        var moveTo = 1 // ai failsafe
         when (player) {
-            1 -> {
+            1 -> { // player response
                 print("$DIVIDER Move To?: ")
                 moveTo = readln().toInt()
             }
-            2 -> {
-                if (coinSpots.size != 1) moveTo = Random.nextInt(1,coinSpots.size)
-                Thread.sleep(WAIT.toLong())
-                displayGame(STRING,"Picked Spot $moveTo", listOf(1,2))
+            2 -> { // ai response
+                if (coinSpots.size != 1) moveTo = Random.nextInt(1,coinSpots.size)   // pick random spot
+                Thread.sleep(WAIT.toLong())                                              // wait for to space out game
+                displayGame(STRING,"Picked Spot $moveTo", listOf(1,2))            // displayed the spot it picked to player
             }
         }
         displayGame(BRACKET,"", listOf(1,2))
 
         actionChose = true
+
+        // sets the spot chosen to the coin and previous spot to empty (moves coin)
         setSlot(coinSpots[moveTo-1], game[coinToMove] )
         game[coinToMove] = EMPTY
     }
     return listOf(false, player)
 }
 
-fun doTurn(player: Int): Boolean {  // cycles between turns, connects main func and get action (seperate for readiblitiy)
+
+// cycles between turns, connects main func and get action (seperate for readiblitiy)
+// Returns true when a player completes round
+// player: players turn
+fun doTurn(player: Int): Boolean {
+    // sections off previous turn (ai or player)
     displayGame(BOX,"", listOf(1,2))
     displayGame(BRACKET,"", listOf(1,2))
 
+    // displays which players turn it is
     if (player == 1) displayGame(STRING,"P1: $name", listOf(1,2))
     else displayGame(STRING,"P2: ${"AI".red()}", listOf(1,2))
     Thread.sleep((WAIT + 100).toLong())
 
     displayGame(SPACE, "", listOf(1,2))
-    val end = getAction(player)
-    return end[0] as Boolean
+    val end = getAction(player) // does players turn
+    return end[0] as Boolean   // receives if player ended game round and returns that to game loop
 }
 
 fun setUpGame(): Boolean {  // sets up coins in slots, takes players coin input and randomizes it into table
@@ -262,6 +308,7 @@ fun setUpGame(): Boolean {  // sets up coins in slots, takes players coin input 
             //println(lowestSlot)
         }
     }
+
     if (lowestSlot > 12) lowestSlot = BOARD_LENGTH - 9
     var goldSlot = Random.nextInt(lowestSlot+1,BOARD_LENGTH-1)
     while (game[goldSlot] != EMPTY) goldSlot = Random.nextInt(lowestSlot+1,BOARD_LENGTH-1)
@@ -271,8 +318,12 @@ fun setUpGame(): Boolean {  // sets up coins in slots, takes players coin input 
 }
 
 
-
-fun displayGame(type:Int, string:String, fillNums:List<Any>) {  // display setup, purely cosemetic purposes
+/* adds borders to the game (cosemetical purposes)
+Type: code/var that refers to the type of border you want to use ,they are set at top
+String: used if type is string, the piece of text it displays
+fillNums: for displaying pickable coins and pickable spots, list of spots in the table used if type is, BOX or SPOT
+ */
+fun displayGame(type:Int, string:String, fillNums:List<Any>) {
     var strang:String = EMPTY
 
     // -------------------------- visual box values ---------------------------------------------------------------------------------------------------------
@@ -285,6 +336,7 @@ fun displayGame(type:Int, string:String, fillNums:List<Any>) {  // display setup
     val boxConnectorBracket = ("├" + ("─".repeat(TSLENGTH-1) + "┼").repeat(BOARD_LENGTH-1) + "─".repeat(TSLENGTH) + "┤")
     val endBracket = "╰" + "─".repeat(BOARD_LENGTH * TSLENGTH) + "╯"
 
+    // fills out a box of the game board to display game
     fun fillBox() {
         for (i in 0..<BOARD_LENGTH) {
             strang = when (game[i]) {
@@ -297,9 +349,10 @@ fun displayGame(type:Int, string:String, fillNums:List<Any>) {  // display setup
         println(" $DIVIDER")
     }
 
+    // fills out a box of spots that can be chosen uses fillnums (pickable spots)
     fun boxSpots() {
         for (i in 0..<BOARD_LENGTH) {
-            for (j in fillNums.indices) {
+            for (j in fillNums.indices) { // j is a replacement for i so they have seperate values both mean index, j is index2
                 if (fillNums[j] == i) {
                     strang = "[${j + 1}]"
                     break
@@ -360,6 +413,7 @@ fun displayGame(type:Int, string:String, fillNums:List<Any>) {  // display setup
         else -> println(endBracket)
     }
 
+// ------------- old prints for later use if forgotten
 //    println(boxBracket)
 //    fillBox()
 //    println(boxConnectorBracket)
